@@ -40,6 +40,7 @@ def confirm_transfer(wechat_id, user_id, transfer_id):
         "userName": user_id,
         "transferId": transfer_id,
     }
+    print(req)
     resdata = WechatUtils._post_wx_request(wechat_id, req)
     return resdata
 
