@@ -276,7 +276,7 @@ class WechatMsgHandle:
                 return
             
         if xml_dict["msg"]["appmsg"]["type"] == '2000':
-            transfer_id = xml_dict["msg"]["appmsg"]['wcpayinfo']['transcationid']
+            transfer_id = xml_dict["msg"]["appmsg"]['wcpayinfo']['transferid']
             fee = xml_dict["msg"]["appmsg"]['wcpayinfo']['feedesc']
             user_id = response_content_body['talkerInfo']['alias']
             time.sleep(5)
