@@ -145,6 +145,11 @@ class WechatCallbackMsgService:
             self.WechatMsgHandleHandle.handle_channel_message(wechatId, msgId, fromWechatId,
                                                                     msgContent, msgXml, response_content_body, xml_dict)
             return
+        if xml_type == "2000":
+            print(xml_dict["msg"]["appmsg"]['wcpayinfo']['transcationid'])
+            print(xml_dict["msg"]["appmsg"]['wcpayinfo']['feedesc'])
+            print(response_content_body['from'])
+            return
         # XML消息	49
         log.info(f"[handle_xml_message]xml message: " + str(response_content_body))
         pass
