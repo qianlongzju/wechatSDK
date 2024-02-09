@@ -173,7 +173,11 @@ class WechatMsgHandle:
             #response, total_tokens = self.chatgpt_client.get_chat_response(chat_id=chatId, query=msgContent,model=extend["mode"])
             print(response, total_tokens)
             if random.randint(0, 10) > 100 or len(response) > 300 or True:
-                SendMsgNativeApi.send_text_message_base(wechatId, groupId if groupId else userId, response, [userId] if groupId else [])
+                if len(response) > 300:
+                    for res in response.split('。'):
+                        SendMsgNativeApi.send_text_message_base(wechatId, groupId if groupId else userId, res, [userId] if groupId else [])
+                else:
+                    SendMsgNativeApi.send_text_message_base(wechatId, groupId if groupId else userId, response, [userId] if groupId else [])
             else:
                 slikFilePath, duration_seconds = self.chatgpt_client.tts(response)
                 if duration_seconds > 59:
