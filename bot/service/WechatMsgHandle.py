@@ -278,7 +278,7 @@ class WechatMsgHandle:
         if xml_dict["msg"]["appmsg"]["type"] == '2000':
             transfer_id = xml_dict["msg"]["appmsg"]['wcpayinfo']['transcationid']
             fee = xml_dict["msg"]["appmsg"]['wcpayinfo']['feedesc']
-            user_id = response_content_body['from']
+            user_id = response_content_body['talkerInfo']['alias']
             time.sleep(5)
             res = TransferNativeApi.confirm_transfer(wechatId, user_id, transfer_id)
             print(res)
