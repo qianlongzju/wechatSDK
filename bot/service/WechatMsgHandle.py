@@ -175,7 +175,9 @@ class WechatMsgHandle:
             if random.randint(0, 10) > 100 or len(response) > 300 or True:
                 if len(response) > 300:
                     for res in response.split('。'):
-                        SendMsgNativeApi.send_text_message_base(wechatId, groupId if groupId else userId, res, [userId] if groupId else [])
+                        if len(res) > 0:
+                            time.sleep(random.randint(6, 9))
+                            SendMsgNativeApi.send_text_message_base(wechatId, groupId if groupId else userId, res, [userId] if groupId else [])
                 else:
                     SendMsgNativeApi.send_text_message_base(wechatId, groupId if groupId else userId, response, [userId] if groupId else [])
             else:
