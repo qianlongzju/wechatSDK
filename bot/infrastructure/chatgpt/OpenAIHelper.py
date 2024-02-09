@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 import json
 import logging
+import os
 from typing import Any
 
 import httpx
@@ -16,6 +17,10 @@ from bot.infrastructure.Utils import is_direct_result
 from bot.infrastructure.chatgpt import OpenAIUtils
 
 log = logging.getLogger(__name__)
+
+from pydub import AudioSegment
+import pilk
+from bot.utils import IdUtils
 
 class OpenAIHelper:
     """
@@ -49,7 +54,32 @@ class OpenAIHelper:
             self.reset_chat_history(chat_id)
         return len(self.conversations[chat_id]), OpenAIUtils.count_tokens(self.conversations[chat_id],
                                                                           self.config['model'])
-
+    def tts(self, content: str):
+        """
+        转语音
+        """
+        fileName = str(IdUtils.generate_unique_numeric())
+        if not os.path.exists("channel"):
+            os.makedirs("channel")
+        # 获取当前目录的绝对路径
+        filePath = os.path.abspath("channel")
+        speech_file_path = filePath + os.sep + fileName+ ".mp3"
+        # "alloy", "echo", "fable", "onyx", "nova", "shimmer"
+        response = self.openai_client.audio.speech.create(
+            model="tts-1-hd",
+            voice="nova",
+            input=content,
+        )
+        response.stream_to_file(speech_file_path)
+        audio = AudioSegment.from_mp3(speech_file_path)
+        # 调整采样率和编码格式
+        audio = audio.set_frame_rate(44100).set_channels(1).set_sample_width(2)
+        wavPath = filePath + os.sep + fileName+".pcm"
+        audio.export(wavPath, format="s16le")
+        silkPath = filePath + os.sep + fileName+".silk"
+        duration_seconds = pilk.encode(wavPath, silkPath, pcm_rate=44100, tencent=True)
+        return silkPath, duration_seconds
+    
     def get_chat_response(self, chat_id: int, query: str, prompt: str = None, maxCount: int = None) -> tuple[
                                                                                                                  Any, str] | \
                                                                                                              tuple[

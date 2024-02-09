@@ -1,6 +1,7 @@
 import logging
 import re
 import time
+import random
 
 import xmltodict
 
@@ -169,9 +170,20 @@ class WechatMsgHandle:
             maxCount = None if not groupId else self.getChatRoomMaxCount(wechatId, groupId)
             initPrompt = None if not groupId else self.getChatRoomPrompt(wechatId, groupId)
             response, total_tokens = self.chatgpt_client.get_chat_response(chat_id=chatId, query=msgContent,prompt=initPrompt, maxCount=maxCount)
+            #response, total_tokens = self.chatgpt_client.get_chat_response(chat_id=chatId, query=msgContent,model=extend["mode"])
+            print(response, total_tokens)
+            if random.randint(0, 10) > 100 or len(response) > 300 or True:
+                SendMsgNativeApi.send_text_message_base(wechatId, groupId if groupId else userId, response, [userId] if groupId else [])
+            else:
+                slikFilePath, duration_seconds = self.chatgpt_client.tts(response)
+                if duration_seconds > 59:
+                    SendMsgNativeApi.send_text_message_base(wechatId, groupId if groupId else userId,response, [userId] if groupId else [])
+                else:
+                    SendMsgNativeApi.send_voice_message(wechatId, groupId if groupId else userId, slikFilePath)
+
             # response, total_tokens = msgContent, 0
             # 调用微信发送消息接口
-            SendMsgNativeApi.send_text_message_base(wechatId, groupId if groupId else userId, response, [userId] if groupId else [])
+            #SendMsgNativeApi.send_text_message_base(wechatId, groupId if groupId else userId, response, [userId] if groupId else [])
             self.addUserToken(wechatId, userId, type, total_tokens)
         if type == "image":
             chatRoomGroup = self.getChatRoomConfig(wechatId, groupId)

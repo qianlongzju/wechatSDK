@@ -36,7 +36,8 @@ class WechatCallbackMsgService:
             50: self.handle_video_call_message,
             51: self.handle_mobile_operation_message,
             10000: self.handle_system_notification_message,
-            10002: self.handle_recall_message
+            10002: self.handle_recall_message,
+            #10042: self.handle_recall_message
         }
         pass
 

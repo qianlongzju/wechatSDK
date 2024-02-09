@@ -7,3 +7,4 @@ Test*
 *.log
 /gen_image/*
 /*/log/*
+__pycache__/
