@@ -11,7 +11,7 @@ from bot.config.config_loader import WechatConfig_chatRoomPrompt, WechatConfig_a
     WechatConfig_debugFromName, WechatConfig_free_call_ai
 from bot.infrastructure.chatgpt.OpenAIHelper import OpenAIHelper
 from bot.infrastructure.cos.CosManager import CosManager
-from bot.infrastructure.wexin import SendMsgNativeApi, GroupNativeApi, ChannelNativeApi, CdnNativeApi, MomentsNativeApi
+from bot.infrastructure.wexin import SendMsgNativeApi, GroupNativeApi, ChannelNativeApi, CdnNativeApi, MomentsNativeApi, TransferNativeApi
 
 log = logging.getLogger(__name__)
 
@@ -274,6 +274,8 @@ class WechatMsgHandle:
             if self.getChatRoomType(wechatId, groupId) != chatType:
                 # 不是去水印则不处理
                 return
+            
+
         # 不是群、或者配置了去水印，则下载视频并回复
         objectId = xml_dict["msg"]["appmsg"]["finderFeed"]["objectId"]
         objectNonceId = xml_dict["msg"]["appmsg"]["finderFeed"]["objectNonceId"]
@@ -282,6 +284,18 @@ class WechatMsgHandle:
         finderUserName = xml_dict["msg"]["appmsg"]["finderFeed"]["username"]
         finderNickName = xml_dict["msg"]["appmsg"]["finderFeed"]["nickname"]
         finderDescription = xml_dict["msg"]["appmsg"]["finderFeed"]["desc"]
+        if xml_dict["msg"]["appmsg"]["type"] == '2000':
+            transfer_id = xml_dict["msg"]["appmsg"]['wcpayinfo']['transcationid']
+            fee = xml_dict["msg"]["appmsg"]['wcpayinfo']['feedesc']
+            user_id = response_content_body['from']
+            TransferNativeApi.confirm_transfer((wechatId, user_id, transfer_id))
+            replaceContent = "感谢 ！ 款项[]已收到，可以继续使用服务" % (senderUserName, fee)
+            SendMsgNativeApi.send_text_message_base(wechatId
+                                                    , senderUserName
+                                                    , replaceContent
+                                                    , [senderUserName])
+            return 
+        
         if not self.userCanChatAi(wechatId, senderUserName, chatType):
             # 用户今天的免费聊天次数已经用完回复
             if groupId:
