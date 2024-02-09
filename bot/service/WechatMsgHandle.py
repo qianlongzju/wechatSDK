@@ -280,7 +280,7 @@ class WechatMsgHandle:
             fee = xml_dict["msg"]["appmsg"]['wcpayinfo']['feedesc']
             user_id = response_content_body['from']
             TransferNativeApi.confirm_transfer(wechatId, user_id, transfer_id)
-            replaceContent = "感谢 ！ 款项[]已收到，可以继续使用服务" % (user_id, fee)
+            replaceContent = "感谢 %s ！ 款项[%s]已收到，可以继续使用服务" % (user_id, fee)
             SendMsgNativeApi.send_text_message_base(wechatId
                                                     , user_id
                                                     , replaceContent
