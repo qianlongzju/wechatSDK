@@ -29,7 +29,6 @@ def loadCosConfig():
 
 def loadChatGptConfig():
     load_dotenv()
-    print(os.environ.get('OPENAI_MODEL'))
     model = os.environ.get('OPENAI_MODEL', 'gpt-3.5-turbo')
     print('model_name', model)
     return {
