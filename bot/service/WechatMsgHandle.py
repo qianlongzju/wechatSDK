@@ -172,12 +172,10 @@ class WechatMsgHandle:
             response, total_tokens = self.chatgpt_client.get_chat_response(chat_id=chatId, query=msgContent,prompt=initPrompt, maxCount=maxCount)
             print(response, total_tokens)
             if random.randint(0, 10) > 100 or len(response) > 300 or True:
-                if len(response) > 300:
-                    for res in response.split('======'):
-                        if len(res) > 0:
-                            SendMsgNativeApi.send_text_message_base(wechatId, groupId if groupId else userId, res, [userId] if groupId else [])
-                            time.sleep(random.randint(6, 9))
-
+                for res in response.split('======'):
+                    if len(res) > 0:
+                        SendMsgNativeApi.send_text_message_base(wechatId, groupId if groupId else userId, res, [userId] if groupId else [])
+                        time.sleep(random.randint(6, 9))
                 else:
                     SendMsgNativeApi.send_text_message_base(wechatId, groupId if groupId else userId, response, [userId] if groupId else [])
             else:
