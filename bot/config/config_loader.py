@@ -166,6 +166,7 @@ App_Run_Status = True
 ChatGptConfig = loadChatGptConfig()
 
 ChatGptSpeechConfig = loadChatGptSpeechConfig()
+print(ChatGptSpeechConfig)
 
 # 微信配置变量 拉取消息的url
 WechatConfig_pullMesUrl = getWechatConfig("pullMesUrl")
