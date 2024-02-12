@@ -30,7 +30,7 @@ def loadCosConfig():
 def loadChatGptConfig():
     load_dotenv()
     model = os.environ.get('OPENAI_MODEL', 'gpt-3.5-turbo')
-    print('model_name', model)
+    print('loadChatGptConfig model_name', model)
     return {
         'enable': os.environ['OPENAI_ENABLE'],
         'api_key': os.environ['OPENAI_API_KEY'],
@@ -72,8 +72,9 @@ def loadChatGptConfig():
 def loadChatGptSpeechConfig():
     load_dotenv()
     model = os.environ.get('OPENAI_MODEL', 'gpt-3.5-turbo')
-    print('model_name', model)
+    print('loadChatGptSpeechConfig model_name', model)
     return {
+        'api_base_url': os.environ['OPENAI_API_KEY_SPEECH'],
         'enable': os.environ['OPENAI_ENABLE'],
         'api_key': os.environ['OPENAI_API_KEY_SPEECH'],
         # 每次响应后是否显示 OpenAI 令牌使用信息
