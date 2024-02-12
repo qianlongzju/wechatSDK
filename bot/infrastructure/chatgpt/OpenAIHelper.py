@@ -64,11 +64,14 @@ class OpenAIHelper:
         filePath = os.path.abspath("channel")
         speech_file_path = filePath + os.sep + fileName+ ".mp3"
         # "alloy", "echo", "fable", "onyx", "nova", "shimmer"
-        response = self.openai_client.audio.speech.create(
-            model="tts-1-hd",
-            voice="nova",
-            input=content,
-        )
+        try:
+            response = self.openai_client.audio.speech.create(
+                model="tts-1-hd",
+                voice="nova",
+                input=content,
+            )
+        except Exception as e:
+            logging.info("exception: {}, content: {}".format(str(e), content))
         response.stream_to_file(speech_file_path)
         audio = AudioSegment.from_mp3(speech_file_path)
         # 调整采样率和编码格式
