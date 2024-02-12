@@ -171,13 +171,14 @@ class WechatMsgHandle:
             initPrompt = None if not groupId else self.getChatRoomPrompt(wechatId, groupId)
             response, total_tokens = self.chatgpt_client.get_chat_response(chat_id=chatId, query=msgContent,prompt=initPrompt, maxCount=maxCount)
             print(response, total_tokens)
-            if (len(response) > 200 and len(response) < 2000) or '模板' in response or 'html' in response:
+            if (len(response) > 200 and len(response) < 2000) or '模板' in response or 'html' in response or True:
                 for res in response.split('======'):
                     if len(res) > 0:
                         SendMsgNativeApi.send_text_message_base(wechatId, groupId if groupId else userId, res.strip(), [userId] if groupId else [])
                         time.sleep(random.randint(6, 9))
             else:
                 slikFilePath, duration_seconds = self.chatgpt_client.tts(response)
+                if duration_seconds == -1: return
                 if duration_seconds > 59:
                     SendMsgNativeApi.send_text_message_base(wechatId, groupId if groupId else userId,response, [userId] if groupId else [])
                 else:

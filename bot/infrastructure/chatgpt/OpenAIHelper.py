@@ -40,9 +40,9 @@ class OpenAIHelper:
         self.openai_speech_client = OpenAI(base_url=ChatGptSpeechConfig['api_base_url'],
             timeout=600, api_key=ChatGptSpeechConfig['api_key'], http_client=httpx.Client(
             proxies=ChatGptSpeechConfig['proxy'],
-            transport=httpx.HTTPTransport(local_address="0.0.0.0")
-        ), )
-        print('openai_speech_clien', self.openai_speech_clien.base_url)
+            transport=httpx.HTTPTransport(local_address="0.0.0.0"))
+        )
+        print('openai_speech_client', self.openai_speech_client.base_url)
         self.plugin_manager = PluginManager()
         self.config = ChatGptConfig
         self.config_speech = ChatGptSpeechConfig
@@ -78,8 +78,8 @@ class OpenAIHelper:
                 input=content,
             )
         except Exception as e:
-            logging.info("exception: {}, content: {}".format(str(e), content))
-            response = ''
+            logging.error("exception: {}, content: {}".format(str(e), content))
+            return filePath, -1
         response.stream_to_file(speech_file_path)
         audio = AudioSegment.from_mp3(speech_file_path)
         # 调整采样率和编码格式
