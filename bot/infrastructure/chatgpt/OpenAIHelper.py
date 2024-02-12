@@ -37,12 +37,12 @@ class OpenAIHelper:
             proxies=ChatGptConfig['proxy'],
             transport=httpx.HTTPTransport(local_address="0.0.0.0"),
         ), )
-        self.openai_speech_client = OpenAI(timeout=600, api_key=ChatGptSpeechConfig['api_key'], http_client=httpx.Client(
+        self.openai_speech_client = OpenAI(base_url=ChatGptSpeechConfig['api_base_url'],
+            timeout=600, api_key=ChatGptSpeechConfig['api_key'], http_client=httpx.Client(
             proxies=ChatGptSpeechConfig['proxy'],
-            transport=httpx.HTTPTransport(local_address="0.0.0.0"),
-            base_url=ChatGptSpeechConfig['api_base_url']
+            transport=httpx.HTTPTransport(local_address="0.0.0.0")
         ), )
-        print(self.openai_speech_client)
+        print('openai_speech_clien', self.openai_speech_clien.base_url)
         self.plugin_manager = PluginManager()
         self.config = ChatGptConfig
         self.config_speech = ChatGptSpeechConfig
