@@ -171,7 +171,7 @@ class WechatMsgHandle:
             initPrompt = None if not groupId else self.getChatRoomPrompt(wechatId, groupId)
             response, total_tokens = self.chatgpt_client.get_chat_response(chat_id=chatId, query=msgContent,prompt=initPrompt, maxCount=maxCount)
             print(response, total_tokens)
-            if len(response) > 200 or '模板' in response or True:
+            if len(response) > 200 or '模板' in response:
                 for res in response.split('======'):
                     if len(res) > 0:
                         SendMsgNativeApi.send_text_message_base(wechatId, groupId if groupId else userId, res.strip(), [userId] if groupId else [])

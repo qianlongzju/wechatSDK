@@ -19,7 +19,6 @@ from bot.infrastructure.chatgpt import OpenAIUtils
 log = logging.getLogger(__name__)
 
 from pydub import AudioSegment
-import pilk
 from bot.utils import IdUtils
 
 class OpenAIHelper:
@@ -77,6 +76,7 @@ class OpenAIHelper:
         wavPath = filePath + os.sep + fileName+".pcm"
         audio.export(wavPath, format="s16le")
         silkPath = filePath + os.sep + fileName+".silk"
+        import pilk
         duration_seconds = pilk.encode(wavPath, silkPath, pcm_rate=44100, tencent=True)
         return silkPath, duration_seconds
     
