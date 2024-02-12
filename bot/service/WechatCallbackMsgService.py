@@ -49,10 +49,10 @@ class WechatCallbackMsgService:
         # 消息体
         response_content_body = response_data["data"]
         syncFromMobile = response_content_body["syncFromMobile"]
-        if syncFromMobile == 1:
-            # 1. 如果是手机端发来的消息，直接返回
-            log.warning(f"[handlePushMsg]sync message from mobile: {response_data}")
-            return
+        # if syncFromMobile == 1:
+        #     # 1. 如果是手机端发来的消息，直接返回
+        #     log.warning(f"[handlePushMsg]sync message from mobile: {response_data}")
+        #     return
         wechatId = response_content_body["to"]
         type = response_content_body["type"]
         self.handleByMsgType(type, wechatId, response_content_body)
