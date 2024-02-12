@@ -69,6 +69,47 @@ def loadChatGptConfig():
 
     }
 
+def loadChatGptSpeechConfig():
+    load_dotenv()
+    model = os.environ.get('OPENAI_MODEL', 'gpt-3.5-turbo')
+    print('model_name', model)
+    return {
+        'enable': os.environ['OPENAI_ENABLE'],
+        'api_key': os.environ['OPENAI_API_KEY_SPEECH'],
+        # 每次响应后是否显示 OpenAI 令牌使用信息
+        'show_usage': os.environ.get('SHOW_USAGE', 'false').lower() == 'true',
+        # 是否流式传输响应。注意：不兼容，如果启用，则N_CHOICES高于 1
+        'stream': os.environ.get('STREAM', 'false').lower() == 'false',
+        'proxy': os.environ.get('OPENAI_PROXY', None),
+        # 内存中保留的最大消息数，之后将汇总对话以避免过多的令牌使用
+        'max_history_size': int(os.environ.get('MAX_HISTORY_SIZE', 15)),
+        # 自最后一条消息以来对话应存在的最大分钟数，之后对话将被重置
+        'max_conversation_age_minutes': int(os.environ.get('MAX_CONVERSATION_AGE_MINUTES', 20)),
+        # 设定基调并控制助手行为的系统消息
+        'assistant_prompt': os.environ.get('ASSISTANT_PROMPT',
+                                           'You are a useful assistant to help facilitate the use of the microsoft api'),
+        'max_tokens': int(os.environ.get('MAX_TOKENS', OpenAIUtils.default_max_tokens(model=model))),
+        # 为每条输入消息生成的答案数。注意STREAM：如果启用，将其设置为大于 1 的数字将无法正常工作
+        'n_choices': int(os.environ.get('N_CHOICES', 1)),
+        # 0 到 2 之间的数字。较高的值将使输出更加随机
+        'temperature': float(os.environ.get('TEMPERATURE', 1.0)),
+        'model': model,
+        # 在显示面向用户的消息之前，模型在单个响应中进行的连续函数调用的最大数量
+        'functions_max_consecutive_calls': int(os.environ.get('FUNCTIONS_MAX_CONSECUTIVE_CALLS', 10)),
+        # -2.0 和 2.0 之间的数字。正值根据新标记目前是否出现在文本中来对其进行惩罚
+        'presence_penalty': float(os.environ.get('PRESENCE_PENALTY', 0.0)),
+        # -2.0 和 2.0 之间的数字。正值根据迄今为止文本中现有的频率对新标记进行惩罚
+        'frequency_penalty': float(os.environ.get('FREQUENCY_PENALTY', 0.0)),
+        'bot_language': os.environ.get('BOT_LANGUAGE', 'en'),
+        'show_plugins_used': os.environ.get('SHOW_PLUGINS_USED', 'false').lower() == 'true',
+        # 为了提高 Whisper 转录服务的准确性，特别是对于特定名称或术语，您可以设置自定义消息。 语音转文字 - 提示
+        'whisper_prompt': os.environ.get('WHISPER_PROMPT', ''),
+        'plugins': os.environ.get('PLUGINS', ''),
+        # 是否使用函数（又名插件）。您可以在此处阅读有关功能的更多信息
+        'enable_functions': os.environ.get('ENABLE_FUNCTIONS',
+                                           str(OpenAIUtils.are_functions_available(model))).lower() == 'true',
+
+    }
 
 def loadWechatConfig():
     # 打开并读取 JSON 文件
@@ -123,6 +164,7 @@ App_Run_Status = True
 
 ChatGptConfig = loadChatGptConfig()
 
+ChatGptSpeechConfig = loadChatGptSpeechConfig()
 
 # 微信配置变量 拉取消息的url
 WechatConfig_pullMesUrl = getWechatConfig("pullMesUrl")

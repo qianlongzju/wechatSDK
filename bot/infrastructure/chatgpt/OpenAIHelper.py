@@ -11,7 +11,7 @@ import openai
 from openai import OpenAI
 from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
 
-from bot.config.config_loader import ChatGptConfig
+from bot.config.config_loader import ChatGptConfig, ChatGptSpeechConfig
 from bot.infrastructure.PluginManager import PluginManager
 from bot.infrastructure.Utils import is_direct_result
 from bot.infrastructure.chatgpt import OpenAIUtils
@@ -37,8 +37,13 @@ class OpenAIHelper:
             proxies=ChatGptConfig['proxy'],
             transport=httpx.HTTPTransport(local_address="0.0.0.0"),
         ), )
+        self.openai_speech_client = OpenAI(timeout=600, api_key=ChatGptSpeechConfig['api_key'], http_client=httpx.Client(
+            proxies=ChatGptConfig['proxy'],
+            transport=httpx.HTTPTransport(local_address="0.0.0.0"),
+        ), )
         self.plugin_manager = PluginManager()
         self.config = ChatGptConfig
+        self.config_speech = ChatGptSpeechConfig
         self.conversations: dict[int: list] = {}  # {chat_id: history}
         self.last_updated: dict[int: datetime] = {}  # {chat_id: last_update_timestamp}
 
@@ -65,7 +70,7 @@ class OpenAIHelper:
         speech_file_path = filePath + os.sep + fileName+ ".mp3"
         # "alloy", "echo", "fable", "onyx", "nova", "shimmer"
         try:
-            response = self.openai_client.audio.speech.create(
+            response = self.openai_speech_client.audio.speech.create(
                 model="tts-1-hd",
                 voice="nova",
                 input=content,
