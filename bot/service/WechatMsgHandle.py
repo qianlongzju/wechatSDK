@@ -178,7 +178,8 @@ class WechatMsgHandle:
                         time.sleep(random.randint(6, 9))
             else:
                 slikFilePath, duration_seconds = self.chatgpt_client.tts(response)
-                if duration_seconds == -1: return
+                if duration_seconds == -1: 
+                    return
                 if duration_seconds > 59:
                     SendMsgNativeApi.send_text_message_base(wechatId, groupId if groupId else userId,response, [userId] if groupId else [])
                 else:
