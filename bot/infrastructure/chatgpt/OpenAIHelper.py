@@ -73,7 +73,7 @@ class OpenAIHelper:
         speech_file_path = filePath + os.sep + fileName+ ".mp3"
         # "alloy", "echo", "fable", "onyx", "nova", "shimmer"
         try:
-            response = self.openai_client.audio.speech.create(
+            response = self.openai_speech_client.audio.speech.create(
                 model="tts-1-hd",
                 voice="nova",
                 input=content,

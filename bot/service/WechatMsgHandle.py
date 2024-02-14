@@ -178,7 +178,7 @@ class WechatMsgHandle:
                         time.sleep(random.randint(6, 9))
             else:
                 slikFilePath, duration_seconds = self.chatgpt_client.tts(response)
-                print('tts', slikFilePath, duration_seconds)
+                print('tts', slikFilePath, duration_seconds, groupId, userId, wechatId)
                 if duration_seconds == -1: 
                     return
                 if duration_seconds > 59:

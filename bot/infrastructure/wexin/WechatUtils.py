@@ -31,6 +31,8 @@ def _post_wx_request(wechatId: object, requestData: object) -> object:
     response = requests.post(requestUrl, json=requestData)
     if response.status_code != 200:
         raise Exception(f"wechat request error, wechatId:{wechatId} response: {response}")
+    print(response)
+    print(response.text)
     return json.loads(response.text)["data"]
 
 
